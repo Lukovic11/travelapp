@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "trip")
@@ -37,4 +38,11 @@ public class Trip {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "trip")
+    private List<Experience> experiences;
+
+    @OneToMany(mappedBy = "trip")
+    private List<Photo> photos;
+
 }

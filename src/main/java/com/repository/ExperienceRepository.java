@@ -1,4 +1,7 @@
 package com.repository;
 
-public interface ExperienceRepository {
+import com.entity.Experience;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ExperienceRepository extends JpaRepository<Experience, Integer> {
 }

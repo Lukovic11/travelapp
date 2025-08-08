@@ -17,4 +17,6 @@ public interface TripService {
 
     TripResponseRecord update(UpdateTripRecord updateTripRecord);
 
+    void deleteById(Long id);
+
 }

@@ -43,6 +43,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripResponseRecord findById(Long id) {
+        // later on add check if current user should be able to access this object
         Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException("TripService findById() :: Trip not found with id " + id));
         return tripMapper.toTripResponseRecord(trip);
     }
@@ -56,9 +57,15 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripResponseRecord update(UpdateTripRecord updateTripRecord) {
-        // later on add check if current user can update this object
+        // later on add check if current user should be able to update this object
         Trip trip = tripRepository.findById(updateTripRecord.id()).orElseThrow(() -> new NotFoundException("TripService update() :: Trip cannot be updated for there is no trip found with id " + updateTripRecord.id()));
         tripMapper.updateTripFromRecord(updateTripRecord, trip);
         return tripMapper.toTripResponseRecord(tripRepository.save(trip));
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        // later on add check if current user should be able to delete this object
+        tripRepository.deleteById(id);
     }
 }

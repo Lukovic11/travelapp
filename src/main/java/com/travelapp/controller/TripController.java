@@ -41,4 +41,10 @@ public class TripController {
         return new ResponseEntity<>(tripService.update(updateTripRecord), HttpStatus.OK);
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        tripService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

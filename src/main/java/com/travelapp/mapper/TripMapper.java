@@ -19,8 +19,6 @@ public interface TripMapper {
 
     Trip toTrip(CreateTripRecord createTripRecord);
 
-    Trip toTrip(UpdateTripRecord updateTripRecord);
-
     void updateTripFromRecord(UpdateTripRecord record, @MappingTarget Trip trip);
 
 }

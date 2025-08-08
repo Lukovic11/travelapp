@@ -1,11 +1,14 @@
 package com.travelapp.serviceImpl;
 
 import com.travelapp.entity.Trip;
+import com.travelapp.exception.BadRequestException;
 import com.travelapp.exception.NotFoundException;
 import com.travelapp.mapper.TripMapper;
+import com.travelapp.record.trip.CreateTripRecord;
 import com.travelapp.record.trip.TripListItemRecord;
 import com.travelapp.record.trip.TripResponseRecord;
 import com.travelapp.repository.TripRepository;
+import com.travelapp.repository.UserRepository;
 import com.travelapp.service.TripService;
 import lombok.Data;
 import org.springframework.stereotype.Service;
@@ -20,10 +23,13 @@ public class TripServiceImpl implements TripService {
 
     private final TripRepository tripRepository;
 
+    private final UserRepository userRepository;
+
     private final TripMapper tripMapper;
 
-    public TripServiceImpl(TripRepository tripRepository, TripMapper tripMapper) {
+    public TripServiceImpl(TripRepository tripRepository, UserRepository userRepository, TripMapper tripMapper) {
         this.tripRepository = tripRepository;
+        this.userRepository = userRepository;
         this.tripMapper = tripMapper;
     }
 
@@ -36,7 +42,14 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripResponseRecord findById(Long id) {
-        Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException("Trip not found with id " + id));
+        Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException("TripService findById() :: Trip not found with id " + id));
         return tripMapper.toTripResponseRecord(trip);
+    }
+
+    @Override
+    public TripResponseRecord save(CreateTripRecord createTripRecord) {
+        Trip trip = tripMapper.toTrip(createTripRecord);
+        trip.setUser(userRepository.findById(createTripRecord.userId()).orElseThrow(() -> new BadRequestException("TripService save() :: Trip cannot be saved for there is no user with id " + createTripRecord.userId())));
+        return tripMapper.toTripResponseRecord(tripRepository.save(trip));
     }
 }

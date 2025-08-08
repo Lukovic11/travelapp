@@ -1,5 +1,6 @@
 package com.travelapp.service;
 
+import com.travelapp.record.trip.CreateTripRecord;
 import com.travelapp.record.trip.TripListItemRecord;
 import com.travelapp.record.trip.TripResponseRecord;
 
@@ -10,5 +11,7 @@ public interface TripService {
     List<TripListItemRecord> findAllByUserId(Long userId);
 
     TripResponseRecord findById(Long id);
+
+    TripResponseRecord save(CreateTripRecord createTripRecord);
 
 }

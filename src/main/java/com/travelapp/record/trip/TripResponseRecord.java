@@ -9,7 +9,6 @@ import java.util.List;
 public record TripResponseRecord(Long id,
                                  String title,
                                  String description,
-                                 String destination,
                                  LocalDate dateFrom,
                                  LocalDate dateTo,
                                  String location,

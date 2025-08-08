@@ -1,6 +1,7 @@
 package com.travelapp.mapper;
 
 import com.travelapp.entity.Trip;
+import com.travelapp.record.trip.CreateTripRecord;
 import com.travelapp.record.trip.TripListItemRecord;
 import com.travelapp.record.trip.TripResponseRecord;
 import org.mapstruct.Mapper;
@@ -13,5 +14,7 @@ public interface TripMapper {
     List<TripListItemRecord> toTripListItemRecordList(List<Trip> trips);
 
     TripResponseRecord toTripResponseRecord(Trip trip);
+
+    Trip toTrip(CreateTripRecord createTripRecord);
 
 }

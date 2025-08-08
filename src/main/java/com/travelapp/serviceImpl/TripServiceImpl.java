@@ -11,14 +11,12 @@ import com.travelapp.record.trip.UpdateTripRecord;
 import com.travelapp.repository.TripRepository;
 import com.travelapp.repository.UserRepository;
 import com.travelapp.service.TripService;
-import lombok.Data;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Data
 @Transactional
 public class TripServiceImpl implements TripService {
 

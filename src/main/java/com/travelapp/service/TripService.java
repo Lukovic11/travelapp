@@ -3,6 +3,7 @@ package com.travelapp.service;
 import com.travelapp.record.trip.CreateTripRecord;
 import com.travelapp.record.trip.TripListItemRecord;
 import com.travelapp.record.trip.TripResponseRecord;
+import com.travelapp.record.trip.UpdateTripRecord;
 
 import java.util.List;
 
@@ -13,5 +14,7 @@ public interface TripService {
     TripResponseRecord findById(Long id);
 
     TripResponseRecord save(CreateTripRecord createTripRecord);
+
+    TripResponseRecord update(UpdateTripRecord updateTripRecord);
 
 }

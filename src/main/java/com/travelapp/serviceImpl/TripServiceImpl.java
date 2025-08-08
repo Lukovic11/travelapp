@@ -7,6 +7,7 @@ import com.travelapp.mapper.TripMapper;
 import com.travelapp.record.trip.CreateTripRecord;
 import com.travelapp.record.trip.TripListItemRecord;
 import com.travelapp.record.trip.TripResponseRecord;
+import com.travelapp.record.trip.UpdateTripRecord;
 import com.travelapp.repository.TripRepository;
 import com.travelapp.repository.UserRepository;
 import com.travelapp.service.TripService;
@@ -50,6 +51,14 @@ public class TripServiceImpl implements TripService {
     public TripResponseRecord save(CreateTripRecord createTripRecord) {
         Trip trip = tripMapper.toTrip(createTripRecord);
         trip.setUser(userRepository.findById(createTripRecord.userId()).orElseThrow(() -> new BadRequestException("TripService save() :: Trip cannot be saved for there is no user with id " + createTripRecord.userId())));
+        return tripMapper.toTripResponseRecord(tripRepository.save(trip));
+    }
+
+    @Override
+    public TripResponseRecord update(UpdateTripRecord updateTripRecord) {
+        // later on add check if current user can update this object
+        Trip trip = tripRepository.findById(updateTripRecord.id()).orElseThrow(() -> new NotFoundException("TripService update() :: Trip cannot be updated for there is no trip found with id " + updateTripRecord.id()));
+        tripMapper.updateTripFromRecord(updateTripRecord, trip);
         return tripMapper.toTripResponseRecord(tripRepository.save(trip));
     }
 }

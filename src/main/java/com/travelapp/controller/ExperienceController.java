@@ -2,6 +2,7 @@ package com.travelapp.controller;
 
 import com.travelapp.record.experience.CreateExperienceRecord;
 import com.travelapp.record.experience.ExperienceResponseRecord;
+import com.travelapp.record.experience.UpdateExperienceRecord;
 import com.travelapp.service.ExperienceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,17 @@ public class ExperienceController {
     @PostMapping
     public ResponseEntity<ExperienceResponseRecord> save(@RequestBody CreateExperienceRecord createExperienceRecord){
         return new ResponseEntity<>(experienceService.save(createExperienceRecord), HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<ExperienceResponseRecord> update(@RequestBody UpdateExperienceRecord updateExperienceRecord){
+        return new ResponseEntity<>(experienceService.update(updateExperienceRecord), HttpStatus.OK );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        experienceService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

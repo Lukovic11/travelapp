@@ -45,9 +45,11 @@ public class TripServiceImpl implements TripService {
     public TripResponseRecord findById(Long id) {
         // later on get user from context
         User currentUser = userRepository.findByUsername("ivana");
-        Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException("TripService findById() :: Trip not found with id " + id));
+        Trip trip = tripRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("TripService findById() :: Trip not found with id " + id));
         if(!trip.getUser().equals(currentUser)) {
-            throw new ForbiddenException("TripService findById() :: User " + currentUser.getUsername() + " does not have access to this trip");
+            throw new ForbiddenException("TripService findById() :: User " + currentUser.getUsername()
+                    + " does not have access to this trip");
         }
         return tripMapper.toTripResponseRecord(trip);
     }
@@ -65,9 +67,12 @@ public class TripServiceImpl implements TripService {
     public TripResponseRecord update(UpdateTripRecord updateTripRecord) {
         // later on get user from context
         User currentUser = userRepository.findByUsername("ivana");
-        Trip trip = tripRepository.findById(updateTripRecord.id()).orElseThrow(() -> new NotFoundException("TripService update() :: Trip cannot be updated for there is no trip found with id " + updateTripRecord.id()));
+        Trip trip = tripRepository.findById(updateTripRecord.id()).orElseThrow(
+                () -> new NotFoundException("TripService update() :: " +
+                        "Trip cannot be updated for there is no trip found with id " + updateTripRecord.id()));
         if(!trip.getUser().equals(currentUser)) {
-            throw new ForbiddenException("TripService update() :: User " + currentUser.getUsername() + " does not have access to this trip");
+            throw new ForbiddenException("TripService update() :: User " + currentUser.getUsername()
+                    + " does not have access to this trip");
         }
         tripMapper.updateTripFromRecord(updateTripRecord, trip);
         return tripMapper.toTripResponseRecord(tripRepository.save(trip));
@@ -77,9 +82,12 @@ public class TripServiceImpl implements TripService {
     public void deleteById(Long id) {
         // later on get user from context
         User currentUser = userRepository.findByUsername("ivana");
-        Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException("TripService delete() :: Trip cannot be deleted for there is no trip found with id " + id));
+        Trip trip = tripRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("TripService delete() :: " +
+                        "Trip cannot be deleted for there is no trip found with id " + id));
         if(!trip.getUser().equals(currentUser)) {
-            throw new ForbiddenException("TripService delete() :: User " + currentUser.getUsername() + " does not have access to this trip");
+            throw new ForbiddenException("TripService delete() :: User " + currentUser.getUsername()
+                    + " does not have access to this trip");
         }
         tripRepository.deleteById(id);
     }

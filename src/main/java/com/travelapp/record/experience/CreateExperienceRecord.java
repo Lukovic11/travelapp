@@ -4,5 +4,6 @@ import java.time.LocalDate;
 
 public record CreateExperienceRecord(String title,
                                      String description,
-                                     LocalDate date) {
+                                     LocalDate date,
+                                     Long tripId) {
 }

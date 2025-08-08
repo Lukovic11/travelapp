@@ -7,6 +7,5 @@ public record CreateTripRecord(String title,
                                String description,
                                LocalDate dateFrom,
                                LocalDate dateTo,
-                               String location,
-                               Long userId) {
+                               String location) {
 }

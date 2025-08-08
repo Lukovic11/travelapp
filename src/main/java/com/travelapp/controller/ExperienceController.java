@@ -1,13 +1,11 @@
 package com.travelapp.controller;
 
+import com.travelapp.record.experience.CreateExperienceRecord;
 import com.travelapp.record.experience.ExperienceResponseRecord;
 import com.travelapp.service.ExperienceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +22,16 @@ public class ExperienceController {
     @GetMapping("/trip/{tripId}")
     public ResponseEntity<List<ExperienceResponseRecord>> findAllByTripId(@PathVariable("tripId") Long tripId) {
         return new ResponseEntity<>(experienceService.findAllByTripId(tripId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ExperienceResponseRecord> findById(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(experienceService.findById(id), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<ExperienceResponseRecord> save(@RequestBody CreateExperienceRecord createExperienceRecord){
+        return new ResponseEntity<>(experienceService.save(createExperienceRecord), HttpStatus.CREATED);
     }
 
 }

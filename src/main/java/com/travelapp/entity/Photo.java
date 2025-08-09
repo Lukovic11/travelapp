@@ -25,6 +25,6 @@ public class Photo {
     private Trip trip;
 
     @ManyToOne
-    @JoinColumn(name = "experience_id", nullable = false)
+    @JoinColumn(name = "experience_id")
     private Experience experience;
 }

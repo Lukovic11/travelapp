@@ -31,13 +31,13 @@ public class ExperienceController {
     }
 
     @PostMapping
-    public ResponseEntity<ExperienceResponseRecord> save(@RequestBody CreateExperienceRecord createExperienceRecord){
+    public ResponseEntity<ExperienceResponseRecord> save(@RequestBody CreateExperienceRecord createExperienceRecord) {
         return new ResponseEntity<>(experienceService.save(createExperienceRecord), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<ExperienceResponseRecord> update(@RequestBody UpdateExperienceRecord updateExperienceRecord){
-        return new ResponseEntity<>(experienceService.update(updateExperienceRecord), HttpStatus.OK );
+    public ResponseEntity<ExperienceResponseRecord> update(@RequestBody UpdateExperienceRecord updateExperienceRecord) {
+        return new ResponseEntity<>(experienceService.update(updateExperienceRecord), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -44,7 +44,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         User currentUser = userRepository.findByUsername("ivana");
         Trip trip = tripRepository.findById(tripId).orElseThrow(
                 () -> new NotFoundException("ExperienceService findAllByTripId() :: Trip not found with id " + tripId));
-        if(!trip.getUser().equals(currentUser)) {
+        if (!trip.getUser().equals(currentUser)) {
             throw new ForbiddenException("ExperienceService findAllByTripId() :: User " + currentUser.getUsername() +
                     " does not have access to this trip");
         }
@@ -57,7 +57,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         User currentUser = userRepository.findByUsername("ivana");
         Experience experience = experienceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("ExperienceService findById() :: Experience not found with id " + id));
-        if(!experience.getTrip().getUser().equals(currentUser)) {
+        if (!experience.getTrip().getUser().equals(currentUser)) {
             throw new ForbiddenException("ExperienceService findById() :: User " + currentUser.getUsername() +
                     " does not have access to this experience");
         }
@@ -71,7 +71,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         Trip trip = tripRepository.findById(createExperienceRecord.tripId()).orElseThrow(
                 () -> new NotFoundException("ExperienceService save() :: Trip not found with id "
                         + createExperienceRecord.tripId()));
-        if(!trip.getUser().equals(currentUser)) {
+        if (!trip.getUser().equals(currentUser)) {
             throw new ForbiddenException("ExperienceService save() :: User " + currentUser.getUsername() +
                     " does not have access to this trip");
         }
@@ -87,7 +87,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         Experience experience = experienceRepository.findById(updateExperienceRecord.id()).orElseThrow(
                 () -> new NotFoundException("ExperienceService update() :: Experience not found with id "
                         + updateExperienceRecord.id()));
-        if(!experience.getTrip().getUser().equals(currentUser)) {
+        if (!experience.getTrip().getUser().equals(currentUser)) {
             throw new ForbiddenException("ExperienceService update() :: User " + currentUser.getUsername()
                     + " does not have access to this experience");
         }
@@ -102,7 +102,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         Experience experience = experienceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("ExperienceService delete() :: Experience not found with id "
                         + id));
-        if(!experience.getTrip().getUser().equals(currentUser)) {
+        if (!experience.getTrip().getUser().equals(currentUser)) {
             throw new ForbiddenException("ExperienceService delete() :: User " + currentUser.getUsername()
                     + " does not have access to this experience");
         }

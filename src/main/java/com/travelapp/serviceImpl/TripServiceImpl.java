@@ -2,7 +2,6 @@ package com.travelapp.serviceImpl;
 
 import com.travelapp.entity.Trip;
 import com.travelapp.entity.User;
-import com.travelapp.exception.BadRequestException;
 import com.travelapp.exception.ForbiddenException;
 import com.travelapp.exception.NotFoundException;
 import com.travelapp.mapper.TripMapper;
@@ -47,7 +46,7 @@ public class TripServiceImpl implements TripService {
         User currentUser = userRepository.findByUsername("ivana");
         Trip trip = tripRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("TripService findById() :: Trip not found with id " + id));
-        if(!trip.getUser().equals(currentUser)) {
+        if (!trip.getUser().equals(currentUser)) {
             throw new ForbiddenException("TripService findById() :: User " + currentUser.getUsername()
                     + " does not have access to this trip");
         }
@@ -70,7 +69,7 @@ public class TripServiceImpl implements TripService {
         Trip trip = tripRepository.findById(updateTripRecord.id()).orElseThrow(
                 () -> new NotFoundException("TripService update() :: " +
                         "Trip cannot be updated for there is no trip found with id " + updateTripRecord.id()));
-        if(!trip.getUser().equals(currentUser)) {
+        if (!trip.getUser().equals(currentUser)) {
             throw new ForbiddenException("TripService update() :: User " + currentUser.getUsername()
                     + " does not have access to this trip");
         }
@@ -85,7 +84,7 @@ public class TripServiceImpl implements TripService {
         Trip trip = tripRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("TripService delete() :: " +
                         "Trip cannot be deleted for there is no trip found with id " + id));
-        if(!trip.getUser().equals(currentUser)) {
+        if (!trip.getUser().equals(currentUser)) {
             throw new ForbiddenException("TripService delete() :: User " + currentUser.getUsername()
                     + " does not have access to this trip");
         }

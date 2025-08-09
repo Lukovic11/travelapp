@@ -1,0 +1,12 @@
+package com.travelapp.repository;
+
+import com.travelapp.entity.Experience;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface ExperienceRepository extends JpaRepository<Experience, Long> {
+
+    List<Experience> findAllByTripId(Long tripId);
+
+}

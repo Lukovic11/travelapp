@@ -113,7 +113,7 @@ public class PhotoServiceImpl implements PhotoService {
                 }
 
                 String fileName = file.getOriginalFilename();
-                if (fileName == null || fileName.trim().isEmpty()) {
+                if (fileName.trim().isEmpty()) {
                     throw new BadRequestException("PhotoService saveMultiple() :: File must have a name");
                 }
 

@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 **/travelapp-gallery
+/photos
 
 ### STS ###
 .apt_generated

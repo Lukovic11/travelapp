@@ -37,8 +37,8 @@ public class PhotoController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam List<Long> ids) {
-        photoService.deleteMultiple(ids);
+    public ResponseEntity<Void> delete(@RequestParam Long id) {
+        photoService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

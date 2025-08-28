@@ -73,16 +73,23 @@ public class PhotoServiceImpl implements PhotoService {
             throw new BadRequestException("PhotoService saveMultiple() :: No photos provided");
         }
 
+        if (tripId == null && experienceId == null) {
+            throw new BadRequestException("PhotoService saveMultiple() :: Trip id and experience id cannot both be empty");
+        }
+
         // later on get user from context
         User currentUser = userRepository.findByUsername("ivana");
 
-        Trip trip = tripRepository.findById(tripId).orElseThrow(
-                () -> new NotFoundException("PhotoService saveMultiple() :: Trip not found with id "
-                        + tripId));
+        Trip trip = null;
+        if (tripId != null) {
+            trip = tripRepository.findById(tripId).orElseThrow(
+                    () -> new NotFoundException("PhotoService saveMultiple() :: Trip not found with id "
+                            + tripId));
 
-        if (!trip.getUser().equals(currentUser)) {
-            throw new ForbiddenException("PhotoService saveMultiple() :: User " + currentUser.getUsername()
-                    + " does not have access to this trip");
+            if (!trip.getUser().equals(currentUser)) {
+                throw new ForbiddenException("PhotoService saveMultiple() :: User " + currentUser.getUsername()
+                        + " does not have access to this trip");
+            }
         }
 
         Experience experience = null;
@@ -93,6 +100,9 @@ public class PhotoServiceImpl implements PhotoService {
             if (!experience.getTrip().getUser().equals(currentUser)) {
                 throw new ForbiddenException("PhotoService saveMultiple() :: User " + currentUser.getUsername()
                         + " does not have access to this experience");
+            }
+            if (trip != null && !experience.getTrip().equals(trip)) {
+                throw new BadRequestException("PhotoService saveMultiple() :: Experience with the id of " + experienceId + " does not belong to the trip with the id of " + tripId);
             }
         }
 
@@ -146,20 +156,13 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public void deleteMultiple(List<Long> ids) {
-        if (ids == null || ids.isEmpty()) {
+    public void delete(Long id) {
+        if (id == null) {
             throw new BadRequestException("PhotoService deleteMultiple() :: No photo IDs provided");
         }
 
         // later on get user from context
         User currentUser = userRepository.findByUsername("ivana");
-
-        List<Photo> photosToDelete = new ArrayList<>();
-
-        for (Long id : ids) {
-            if (id == null) {
-                continue;
-            }
 
             Photo photo = photoRepository.findById(id).orElseThrow(
                     () -> new NotFoundException("PhotoService deleteMultiple() :: Photo not found with ID: " + id));
@@ -169,12 +172,6 @@ public class PhotoServiceImpl implements PhotoService {
                         + " does not have access to photo with ID: " + id);
             }
 
-            photosToDelete.add(photo);
-        }
-
-        List<Photo> failedDeletions = new ArrayList<>();
-
-        for (Photo photo : photosToDelete) {
             try {
                 Path photoPath = Paths.get(PHOTO_DIR + File.separator + photo.getImageUrl());
                 boolean fileDeleted = Files.deleteIfExists(photoPath);
@@ -187,19 +184,12 @@ public class PhotoServiceImpl implements PhotoService {
 
             } catch (IOException e) {
                 System.err.println("PhotoService deleteMultiple() :: Failed to delete file: " + photo.getImageUrl() + " - " + e.getMessage());
-                failedDeletions.add(photo);
+                throw new RuntimeException("PhotoService deleteMultiple() :: Failed to delete photos with IDs: " + photo.getId());
             } catch (Exception e) {
                 System.err.println("PhotoService deleteMultiple() :: Failed to delete photo from database: " + photo.getImageUrl() + " - " + e.getMessage());
-                failedDeletions.add(photo);
+                throw new RuntimeException("PhotoService deleteMultiple() :: Failed to delete photos with IDs: " + photo.getId());
             }
-        }
 
-        if (!failedDeletions.isEmpty()) {
-            String failedIds = failedDeletions.stream()
-                    .map(photo -> String.valueOf(photo.getId()))
-                    .collect(Collectors.joining(", "));
-            throw new RuntimeException("PhotoService deleteMultiple() :: Failed to delete photos with IDs: " + failedIds);
-        }
     }
 
     private boolean isValidImageExtension(String fileName) {

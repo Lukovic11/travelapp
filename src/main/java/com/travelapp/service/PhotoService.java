@@ -13,5 +13,5 @@ public interface PhotoService {
 
     List<PhotoResponseRecord> saveMultiple(Long tripId, Long experienceId, List<MultipartFile> files);
 
-    void deleteMultiple(List<Long> ids);
+    void delete(Long id);
 }

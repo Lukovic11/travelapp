@@ -13,6 +13,9 @@ import com.travelapp.repository.ExperienceRepository;
 import com.travelapp.repository.TripRepository;
 import com.travelapp.repository.UserRepository;
 import com.travelapp.service.ExperienceService;
+import com.travelapp.service.PhotoService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,18 +33,20 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     private final ExperienceMapper experienceMapper;
 
+    private final PhotoService photoService;
+
     public ExperienceServiceImpl(ExperienceRepository experienceRepository, UserRepository userRepository,
-                                 TripRepository tripRepository, ExperienceMapper experienceMapper) {
+                                 TripRepository tripRepository, ExperienceMapper experienceMapper, PhotoService photoService) {
         this.experienceRepository = experienceRepository;
         this.userRepository = userRepository;
         this.tripRepository = tripRepository;
         this.experienceMapper = experienceMapper;
+        this.photoService = photoService;
     }
 
     @Override
     public List<ExperienceResponseRecord> findAllByTripId(Long tripId) {
-        // later on get user from context
-        User currentUser = userRepository.findByUsername("ivana");
+        User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(tripId).orElseThrow(
                 () -> new NotFoundException("ExperienceService findAllByTripId() :: Trip not found with id " + tripId));
         if (!trip.getUser().equals(currentUser)) {
@@ -53,8 +58,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public ExperienceResponseRecord findById(Long id) {
-        // later on get user from context
-        User currentUser = userRepository.findByUsername("ivana");
+        User currentUser = getCurrentUser();
         Experience experience = experienceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("ExperienceService findById() :: Experience not found with id " + id));
         if (!experience.getTrip().getUser().equals(currentUser)) {
@@ -66,8 +70,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public ExperienceResponseRecord save(CreateExperienceRecord createExperienceRecord) {
-        // later on get user from context
-        User currentUser = userRepository.findByUsername("ivana");
+        User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(createExperienceRecord.tripId()).orElseThrow(
                 () -> new NotFoundException("ExperienceService save() :: Trip not found with id "
                         + createExperienceRecord.tripId()));
@@ -82,8 +85,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public ExperienceResponseRecord update(UpdateExperienceRecord updateExperienceRecord) {
-        // later on get user from context
-        User currentUser = userRepository.findByUsername("ivana");
+        User currentUser = getCurrentUser();
         Experience experience = experienceRepository.findById(updateExperienceRecord.id()).orElseThrow(
                 () -> new NotFoundException("ExperienceService update() :: Experience not found with id "
                         + updateExperienceRecord.id()));
@@ -97,8 +99,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public void deleteById(Long id) {
-        // later on get user from context
-        User currentUser = userRepository.findByUsername("ivana");
+        User currentUser = getCurrentUser();
         Experience experience = experienceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("ExperienceService delete() :: Experience not found with id "
                         + id));
@@ -106,6 +107,17 @@ public class ExperienceServiceImpl implements ExperienceService {
             throw new ForbiddenException("ExperienceService delete() :: User " + currentUser.getUsername()
                     + " does not have access to this experience");
         }
+        photoService.deleteByExperienceId(id);
         experienceRepository.deleteById(id);
+    }
+
+    private User getCurrentUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        return userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new NotFoundException("ExperienceService getCurrentUser() :: User not found with username "
+                        + userDetails.getUsername()));
     }
 }

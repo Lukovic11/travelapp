@@ -21,9 +21,9 @@ public class TripController {
         this.tripService = tripService;
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<TripListItemRecord>> findAllByUserId(@PathVariable Long userId) {
-        return new ResponseEntity<>(tripService.findAllByUserId(userId), HttpStatus.OK);
+    @GetMapping("/user")
+    public ResponseEntity<List<TripListItemRecord>> findAll() {
+        return new ResponseEntity<>(tripService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

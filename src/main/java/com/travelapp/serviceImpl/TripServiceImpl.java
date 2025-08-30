@@ -11,7 +11,10 @@ import com.travelapp.record.trip.TripResponseRecord;
 import com.travelapp.record.trip.UpdateTripRecord;
 import com.travelapp.repository.TripRepository;
 import com.travelapp.repository.UserRepository;
+import com.travelapp.service.PhotoService;
 import com.travelapp.service.TripService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,23 +30,26 @@ public class TripServiceImpl implements TripService {
 
     private final TripMapper tripMapper;
 
-    public TripServiceImpl(TripRepository tripRepository, UserRepository userRepository, TripMapper tripMapper) {
+    private final PhotoService photoService;
+
+    public TripServiceImpl(TripRepository tripRepository, UserRepository userRepository, TripMapper tripMapper, PhotoService photoService) {
         this.tripRepository = tripRepository;
         this.userRepository = userRepository;
         this.tripMapper = tripMapper;
+        this.photoService = photoService;
     }
 
     @Override
-    public List<TripListItemRecord> findAllByUserId(Long userId) {
+    public List<TripListItemRecord> findAll() {
+        User currentUser = getCurrentUser();
         return tripMapper.toTripListItemRecordList(
-                tripRepository.findAllByUserId(userId)
+                tripRepository.findAllByUserId(currentUser.getId())
         );
     }
 
     @Override
     public TripResponseRecord findById(Long id) {
-        // later on get user from context
-        User currentUser = userRepository.findByUsername("ivana");
+        User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("TripService findById() :: Trip not found with id " + id));
         if (!trip.getUser().equals(currentUser)) {
@@ -55,8 +61,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripResponseRecord save(CreateTripRecord createTripRecord) {
-        // later on get user from context
-        User currentUser = userRepository.findByUsername("ivana");
+        User currentUser = getCurrentUser();
         Trip trip = tripMapper.toTrip(createTripRecord);
         trip.setUser(currentUser);
         return tripMapper.toTripResponseRecord(tripRepository.save(trip));
@@ -64,8 +69,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripResponseRecord update(UpdateTripRecord updateTripRecord) {
-        // later on get user from context
-        User currentUser = userRepository.findByUsername("ivana");
+        User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(updateTripRecord.id()).orElseThrow(
                 () -> new NotFoundException("TripService update() :: " +
                         "Trip cannot be updated for there is no trip found with id " + updateTripRecord.id()));
@@ -79,8 +83,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public void deleteById(Long id) {
-        // later on get user from context
-        User currentUser = userRepository.findByUsername("ivana");
+        User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("TripService delete() :: " +
                         "Trip cannot be deleted for there is no trip found with id " + id));
@@ -88,6 +91,17 @@ public class TripServiceImpl implements TripService {
             throw new ForbiddenException("TripService delete() :: User " + currentUser.getUsername()
                     + " does not have access to this trip");
         }
+        photoService.deleteByTripId(id);
         tripRepository.deleteById(id);
+    }
+
+    private User getCurrentUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        return userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new NotFoundException("TripService getCurrentUser() :: User not found with username "
+                        + userDetails.getUsername()));
     }
 }

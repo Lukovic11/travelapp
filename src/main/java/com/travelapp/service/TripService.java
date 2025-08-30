@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TripService {
 
-    List<TripListItemRecord> findAllByUserId(Long userId);
+    List<TripListItemRecord> findAll();
 
     TripResponseRecord findById(Long id);
 

@@ -59,13 +59,27 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public List<PhotoResponseRecord> getAllByTripId(Long tripId) {
-        // check if that tripId exists
+        if(tripId==null){
+            throw new BadRequestException("PhotoService getAllByTripId() :: Trip id cannot be null");
+        }
+
+        tripRepository.findById(tripId).orElseThrow(
+                ()-> new NotFoundException("PhotoService getAllByTripId() :: Trip does not exist with id " + tripId)
+        );
+
         return photoMapper.toPhotoResponseRecords(photoRepository.findAllByTripId(tripId));
     }
 
     @Override
     public List<PhotoResponseRecord> getAllByExperienceId(Long experienceId) {
-        // check if that experienceId exists
+        if(experienceId==null){
+            throw new BadRequestException("PhotoService getAllByExperienceId() :: Experience id cannot be null");
+        }
+
+        experienceRepository.findById(experienceId).orElseThrow(
+                ()-> new NotFoundException("PhotoService getAllByExperienceId() :: " +
+                        "Experience does not exist with id " + experienceId)
+        );
         return photoMapper.toPhotoResponseRecords(photoRepository.findAllByExperienceId(experienceId));
     }
 
@@ -194,6 +208,14 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public void deleteByTripId(Long tripId) {
+        if(tripId == null){
+            throw new BadRequestException("PhotoService deleteByTripId() :: No photo IDs provided");
+        }
+
+        tripRepository.findById(tripId).orElseThrow(
+                ()-> new NotFoundException("PhotoService deleteByTripId() :: Trip does not exist with id " + tripId)
+        );
+
         List<Photo> photos = photoRepository.findAllByTripId(tripId);
         for (Photo photo : photos) {
             delete(photo.getId());
@@ -202,6 +224,15 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public void deleteByExperienceId(Long experienceId) {
+        if(experienceId == null){
+            throw new BadRequestException("PhotoService deleteByExperienceId() :: No photo IDs provided");
+        }
+
+        experienceRepository.findById(experienceId).orElseThrow(
+                ()-> new NotFoundException("PhotoService getAllByExperienceId() :: " +
+                        "Experience does not exist with id " + experienceId)
+        );
+
         List<Photo> photos = photoRepository.findAllByExperienceId(experienceId);
         for (Photo photo : photos) {
             delete(photo.getId());

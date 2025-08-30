@@ -2,6 +2,7 @@ package com.travelapp.serviceImpl;
 
 import com.travelapp.entity.Trip;
 import com.travelapp.entity.User;
+import com.travelapp.exception.BadRequestException;
 import com.travelapp.exception.ForbiddenException;
 import com.travelapp.exception.NotFoundException;
 import com.travelapp.mapper.TripMapper;
@@ -49,6 +50,10 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripResponseRecord findById(Long id) {
+        if(id == null){
+            throw new BadRequestException("TripService findById() :: Trip id cannot be null");
+        }
+
         User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("TripService findById() :: Trip not found with id " + id));
@@ -60,7 +65,18 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public TripResponseRecord save(CreateTripRecord createTripRecord) {
+    public TripResponseRecord save(
+            CreateTripRecord createTripRecord) {
+        if(createTripRecord == null){
+            throw new BadRequestException("TripService save() :: Record cannot be null");
+        } else if (createTripRecord.title() == null || createTripRecord.title().trim().isEmpty()) {
+            throw new BadRequestException("TripService save() :: Title cannot be null or empty");
+        } else if (createTripRecord.location() == null || createTripRecord.location().trim().isEmpty()) {
+            throw new BadRequestException("TripService save() :: Location cannot be null or empty");
+        } else if (createTripRecord.dateFrom() == null || createTripRecord.dateTo() == null) {
+            throw new BadRequestException("TripService save() :: Start and end dates to cannot be empty");
+        }
+
         User currentUser = getCurrentUser();
         Trip trip = tripMapper.toTrip(createTripRecord);
         trip.setUser(currentUser);
@@ -83,6 +99,10 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public void deleteById(Long id) {
+        if(id==null){
+            throw new BadRequestException("TripService delete() :: Trip id cannot be null");
+        }
+
         User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("TripService delete() :: " +

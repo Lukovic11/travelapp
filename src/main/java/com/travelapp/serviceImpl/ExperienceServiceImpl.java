@@ -3,6 +3,7 @@ package com.travelapp.serviceImpl;
 import com.travelapp.entity.Experience;
 import com.travelapp.entity.Trip;
 import com.travelapp.entity.User;
+import com.travelapp.exception.BadRequestException;
 import com.travelapp.exception.ForbiddenException;
 import com.travelapp.exception.NotFoundException;
 import com.travelapp.mapper.ExperienceMapper;
@@ -46,6 +47,9 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public List<ExperienceResponseRecord> findAllByTripId(Long tripId) {
+        if(tripId == null){
+            throw new BadRequestException("ExperienceService findAllByTripId() :: Trip id cannot be null");
+        }
         User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(tripId).orElseThrow(
                 () -> new NotFoundException("ExperienceService findAllByTripId() :: Trip not found with id " + tripId));
@@ -58,6 +62,9 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public ExperienceResponseRecord findById(Long id) {
+        if(id == null){
+            throw new BadRequestException("ExperienceService findById() :: Experience id cannot be null");
+        }
         User currentUser = getCurrentUser();
         Experience experience = experienceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("ExperienceService findById() :: Experience not found with id " + id));
@@ -70,6 +77,16 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public ExperienceResponseRecord save(CreateExperienceRecord createExperienceRecord) {
+        if(createExperienceRecord == null){
+            throw new BadRequestException("ExperienceService save() :: Record cannot be null");
+        } else if (createExperienceRecord.date() == null) {
+            throw new BadRequestException("ExperienceService save() :: Date cannot be null");
+        } else if (createExperienceRecord.tripId() == null) {
+            throw new BadRequestException("ExperienceService save() :: Trip id cannot be null");
+        } else if (createExperienceRecord.title() == null || createExperienceRecord.title().trim().isEmpty()) {
+            throw new BadRequestException("ExperienceService save() :: Title cannot be null");
+        }
+
         User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(createExperienceRecord.tripId()).orElseThrow(
                 () -> new NotFoundException("ExperienceService save() :: Trip not found with id "
@@ -85,6 +102,14 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public ExperienceResponseRecord update(UpdateExperienceRecord updateExperienceRecord) {
+        if(updateExperienceRecord == null){
+            throw new BadRequestException("ExperienceService update() :: Record cannot be null");
+        } else if (updateExperienceRecord.date() == null) {
+            throw new BadRequestException("ExperienceService update() :: Date cannot be null");
+        } else if (updateExperienceRecord.title() == null || updateExperienceRecord.title().trim().isEmpty()) {
+            throw new BadRequestException("ExperienceService update() :: Title cannot be null");
+        }
+
         User currentUser = getCurrentUser();
         Experience experience = experienceRepository.findById(updateExperienceRecord.id()).orElseThrow(
                 () -> new NotFoundException("ExperienceService update() :: Experience not found with id "
@@ -99,6 +124,10 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public void deleteById(Long id) {
+        if(id==null){
+            throw new BadRequestException("ExperienceService delete() :: Experience id cannot be null");
+        }
+
         User currentUser = getCurrentUser();
         Experience experience = experienceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("ExperienceService delete() :: Experience not found with id "

@@ -59,12 +59,12 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public List<PhotoResponseRecord> getAllByTripId(Long tripId) {
-        if(tripId==null){
+        if (tripId == null) {
             throw new BadRequestException("PhotoService getAllByTripId() :: Trip id cannot be null");
         }
 
         tripRepository.findById(tripId).orElseThrow(
-                ()-> new NotFoundException("PhotoService getAllByTripId() :: Trip does not exist with id " + tripId)
+                () -> new NotFoundException("PhotoService getAllByTripId() :: Trip does not exist with id " + tripId)
         );
 
         return photoMapper.toPhotoResponseRecords(photoRepository.findAllByTripId(tripId));
@@ -72,19 +72,19 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public List<PhotoResponseRecord> getAllByExperienceId(Long experienceId) {
-        if(experienceId==null){
+        if (experienceId == null) {
             throw new BadRequestException("PhotoService getAllByExperienceId() :: Experience id cannot be null");
         }
 
         experienceRepository.findById(experienceId).orElseThrow(
-                ()-> new NotFoundException("PhotoService getAllByExperienceId() :: " +
+                () -> new NotFoundException("PhotoService getAllByExperienceId() :: " +
                         "Experience does not exist with id " + experienceId)
         );
         return photoMapper.toPhotoResponseRecords(photoRepository.findAllByExperienceId(experienceId));
     }
 
     @Override
-    public List<PhotoResponseRecord> saveMultiple(Long tripId, Long experienceId, List<MultipartFile> files) {
+    public List<PhotoResponseRecord> save(Long tripId, Long experienceId, List<MultipartFile> files) {
         if (files == null || files.isEmpty()) {
             throw new BadRequestException("PhotoService saveMultiple() :: No photos provided");
         }
@@ -196,6 +196,7 @@ public class PhotoServiceImpl implements PhotoService {
 
             photoRepository.delete(photo);
 
+
         } catch (IOException e) {
             System.err.println("PhotoService deleteMultiple() :: Failed to delete file: " + photo.getImageUrl() + " - " + e.getMessage());
             throw new RuntimeException("PhotoService deleteMultiple() :: Failed to delete photos with IDs: " + photo.getId());
@@ -208,12 +209,12 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public void deleteByTripId(Long tripId) {
-        if(tripId == null){
+        if (tripId == null) {
             throw new BadRequestException("PhotoService deleteByTripId() :: No photo IDs provided");
         }
 
         tripRepository.findById(tripId).orElseThrow(
-                ()-> new NotFoundException("PhotoService deleteByTripId() :: Trip does not exist with id " + tripId)
+                () -> new NotFoundException("PhotoService deleteByTripId() :: Trip does not exist with id " + tripId)
         );
 
         List<Photo> photos = photoRepository.findAllByTripId(tripId);
@@ -224,12 +225,12 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public void deleteByExperienceId(Long experienceId) {
-        if(experienceId == null){
+        if (experienceId == null) {
             throw new BadRequestException("PhotoService deleteByExperienceId() :: No photo IDs provided");
         }
 
         experienceRepository.findById(experienceId).orElseThrow(
-                ()-> new NotFoundException("PhotoService getAllByExperienceId() :: " +
+                () -> new NotFoundException("PhotoService getAllByExperienceId() :: " +
                         "Experience does not exist with id " + experienceId)
         );
 

@@ -20,12 +20,12 @@ public class WebConfig {
                         .allowCredentials(true);
             }
 
+
             @Override
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
                 registry.addResourceHandler("/photos/**")
                         .addResourceLocations("file:///C:/Users/IvanaL/Desktop/travelapp/photos/");
             }
-
         };
     }
 }

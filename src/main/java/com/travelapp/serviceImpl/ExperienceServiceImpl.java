@@ -47,7 +47,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public List<ExperienceResponseRecord> findAllByTripId(Long tripId) {
-        if(tripId == null){
+        if (tripId == null) {
             throw new BadRequestException("ExperienceService findAllByTripId() :: Trip id cannot be null");
         }
         User currentUser = getCurrentUser();
@@ -62,7 +62,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public ExperienceResponseRecord findById(Long id) {
-        if(id == null){
+        if (id == null) {
             throw new BadRequestException("ExperienceService findById() :: Experience id cannot be null");
         }
         User currentUser = getCurrentUser();
@@ -77,7 +77,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public ExperienceResponseRecord save(CreateExperienceRecord createExperienceRecord) {
-        if(createExperienceRecord == null){
+        if (createExperienceRecord == null) {
             throw new BadRequestException("ExperienceService save() :: Record cannot be null");
         } else if (createExperienceRecord.date() == null) {
             throw new BadRequestException("ExperienceService save() :: Date cannot be null");
@@ -102,7 +102,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public ExperienceResponseRecord update(UpdateExperienceRecord updateExperienceRecord) {
-        if(updateExperienceRecord == null){
+        if (updateExperienceRecord == null) {
             throw new BadRequestException("ExperienceService update() :: Record cannot be null");
         } else if (updateExperienceRecord.date() == null) {
             throw new BadRequestException("ExperienceService update() :: Date cannot be null");
@@ -124,7 +124,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public void deleteById(Long id) {
-        if(id==null){
+        if (id == null) {
             throw new BadRequestException("ExperienceService delete() :: Experience id cannot be null");
         }
 

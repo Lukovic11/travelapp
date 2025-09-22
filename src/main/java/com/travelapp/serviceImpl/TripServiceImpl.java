@@ -50,7 +50,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripResponseRecord findById(Long id) {
-        if(id == null){
+        if (id == null) {
             throw new BadRequestException("TripService findById() :: Trip id cannot be null");
         }
 
@@ -67,7 +67,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public TripResponseRecord save(
             CreateTripRecord createTripRecord) {
-        if(createTripRecord == null){
+        if (createTripRecord == null) {
             throw new BadRequestException("TripService save() :: Record cannot be null");
         } else if (createTripRecord.title() == null || createTripRecord.title().trim().isEmpty()) {
             throw new BadRequestException("TripService save() :: Title cannot be null or empty");
@@ -85,6 +85,15 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripResponseRecord update(UpdateTripRecord updateTripRecord) {
+        if (updateTripRecord == null) {
+            throw new BadRequestException("TripService update() :: Record cannot be null");
+        } else if (updateTripRecord.title() == null || updateTripRecord.title().trim().isEmpty()) {
+            throw new BadRequestException("TripService update() :: Title cannot be null or empty");
+        } else if (updateTripRecord.location() == null || updateTripRecord.location().trim().isEmpty()) {
+            throw new BadRequestException("TripService update() :: Location cannot be null or empty");
+        } else if (updateTripRecord.dateFrom() == null || updateTripRecord.dateTo() == null) {
+            throw new BadRequestException("TripService update() :: Start and end dates to cannot be empty");
+        }
         User currentUser = getCurrentUser();
         Trip trip = tripRepository.findById(updateTripRecord.id()).orElseThrow(
                 () -> new NotFoundException("TripService update() :: " +
@@ -99,7 +108,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public void deleteById(Long id) {
-        if(id==null){
+        if (id == null) {
             throw new BadRequestException("TripService delete() :: Trip id cannot be null");
         }
 

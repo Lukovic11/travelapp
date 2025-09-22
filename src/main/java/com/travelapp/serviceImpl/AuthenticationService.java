@@ -51,7 +51,6 @@ public class AuthenticationService {
         user = userRepository.save(user);
 
         String token = jwtService.generateToken(user);
-//        emailService.sendEmail(new EmailData(user.getEmail(), "Registration Successful", "Welcome to gift planner!"));
 
         return new AuthenticationResponse(token, userMapper.userToUserResponseRecord(user));
     }

@@ -33,7 +33,7 @@ public class PhotoController {
     public ResponseEntity<List<PhotoResponseRecord>> save(@RequestParam("tripId") Long tripId,
                                                           @RequestParam(value = "experienceId", required = false) Long experienceId,
                                                           @RequestParam("file") List<MultipartFile> files) {
-        return new ResponseEntity<>(photoService.saveMultiple(tripId, experienceId, files), HttpStatus.OK);
+        return new ResponseEntity<>(photoService.save(tripId, experienceId, files), HttpStatus.OK);
     }
 
     @DeleteMapping
